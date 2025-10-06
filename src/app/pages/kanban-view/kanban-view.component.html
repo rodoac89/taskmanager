@@ -1,0 +1,117 @@
+<div class="page-container">
+  <header class="page-header">
+    <button class="back-button" (click)="goHome()">
+      ← Volver
+    </button>
+    <h1>📋 Kanban Board</h1>
+    <div class="spacer"></div>
+  </header>
+
+  <div class="toolbar">
+    <div class="toolbar-group">
+      <button class="toolbar-btn" (click)="downloadExample()">
+        📥 Descargar Plantilla
+      </button>
+
+      <label class="toolbar-btn file-label">
+        📤 Cargar Excel/CSV
+        <input
+          type="file"
+          accept=".csv,.xlsx,.xls"
+          (change)="onFileSelected($event)"
+          hidden
+        />
+      </label>
+
+      <button class="toolbar-btn" (click)="exportData()">
+        💾 Exportar Datos
+      </button>
+    </div>
+  </div>
+
+  <div class="kanban-board">
+    <div class="kanban-column pending">
+      <div class="column-header">
+        <h2>⏳ Pendiente</h2>
+        <span class="task-count">{{ pendingTasks().length }}</span>
+      </div>
+      <div class="tasks-container">
+        @for (task of pendingTasks(); track task.id) {
+          <div class="task-card">
+            <div class="task-header">
+              <h3>{{ task.title }}</h3>
+              <span class="priority-badge" [style.background-color]="getPriorityColor(task.priority)">
+                {{ getPriorityLabel(task.priority) }}
+              </span>
+            </div>
+            <p class="task-description">{{ task.description }}</p>
+            <div class="task-footer">
+              <span class="assignee">👤 {{ task.assignee }}</span>
+              <span class="dates">📅 {{ task.endDate | date:'shortDate' }}</span>
+            </div>
+          </div>
+        }
+        @if (pendingTasks().length === 0) {
+          <p class="empty-message">No hay tareas pendientes</p>
+        }
+      </div>
+    </div>
+
+    <div class="kanban-column in-progress">
+      <div class="column-header">
+        <h2>🔄 En Progreso</h2>
+        <span class="task-count">{{ inProgressTasks().length }}</span>
+      </div>
+      <div class="tasks-container">
+        @for (task of inProgressTasks(); track task.id) {
+          <div class="task-card">
+            <div class="task-header">
+              <h3>{{ task.title }}</h3>
+              <span class="priority-badge" [style.background-color]="getPriorityColor(task.priority)">
+                {{ getPriorityLabel(task.priority) }}
+              </span>
+            </div>
+            <p class="task-description">{{ task.description }}</p>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="task.progress"></div>
+            </div>
+            <div class="task-footer">
+              <span class="assignee">👤 {{ task.assignee }}</span>
+              <span class="progress-text">{{ task.progress }}%</span>
+            </div>
+          </div>
+        }
+        @if (inProgressTasks().length === 0) {
+          <p class="empty-message">No hay tareas en progreso</p>
+        }
+      </div>
+    </div>
+
+    <div class="kanban-column completed">
+      <div class="column-header">
+        <h2>✅ Completado</h2>
+        <span class="task-count">{{ completedTasks().length }}</span>
+      </div>
+      <div class="tasks-container">
+        @for (task of completedTasks(); track task.id) {
+          <div class="task-card">
+            <div class="task-header">
+              <h3>{{ task.title }}</h3>
+              <span class="priority-badge" [style.background-color]="getPriorityColor(task.priority)">
+                {{ getPriorityLabel(task.priority) }}
+              </span>
+            </div>
+            <p class="task-description">{{ task.description }}</p>
+            <div class="task-footer">
+              <span class="assignee">👤 {{ task.assignee }}</span>
+              <span class="completed-badge">✓ Completado</span>
+            </div>
+          </div>
+        }
+        @if (completedTasks().length === 0) {
+          <p class="empty-message">No hay tareas completadas</p>
+        }
+      </div>
+    </div>
+  </div>
+</div>

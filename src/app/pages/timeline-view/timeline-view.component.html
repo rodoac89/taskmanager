@@ -1,0 +1,42 @@
+<div class="page-container">
+  <header class="page-header">
+    <button class="back-button" (click)="goHome()">
+      ← Volver
+    </button>
+    <h1>📅 Timeline View</h1>
+    <div class="header-actions">
+      <button class="toggle-btn" (click)="toggleOrientation()">
+        {{ orientation() === 'vertical' ? '↔️ Horizontal' : '↕️ Vertical' }}
+      </button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="toolbar-group">
+      <button class="toolbar-btn" (click)="downloadExample()">
+        📥 Descargar Plantilla
+      </button>
+
+      <label class="toolbar-btn file-label">
+        📤 Cargar Excel/CSV
+        <input
+          type="file"
+          accept=".csv,.xlsx,.xls"
+          (change)="onFileSelected($event)"
+          hidden
+        />
+      </label>
+
+      <button class="toolbar-btn" (click)="exportData()">
+        💾 Exportar Datos
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+    <app-timeline
+      [events]="timelineEvents()"
+      [orientation]="orientation()">
+    </app-timeline>
+  </div>
+</div>

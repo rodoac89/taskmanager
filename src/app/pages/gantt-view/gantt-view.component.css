@@ -1,0 +1,265 @@
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.page-header h1 {
+  color: white;
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  flex: 1;
+  text-align: center;
+}
+
+.spacer {
+  width: 120px;
+}
+
+.back-button {
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: white;
+  color: #667eea;
+}
+
+.toolbar {
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.toolbar-btn {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toolbar-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.file-label {
+  display: inline-block;
+}
+
+.gantt-container {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+  margin-bottom: 2rem;
+}
+
+.gantt-chart {
+  min-width: 800px;
+}
+
+.gantt-header {
+  display: flex;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 1rem;
+}
+
+.task-names-header {
+  width: 250px;
+  padding: 1rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.task-names-header h3 {
+  margin: 0;
+}
+
+.timeline-header {
+  flex: 1;
+  display: flex;
+}
+
+.month-header {
+  flex: 1;
+  padding: 1rem;
+  text-align: center;
+  font-weight: 600;
+  color: #6b7280;
+  border-left: 1px solid #e5e7eb;
+}
+
+.gantt-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.gantt-row {
+  display: flex;
+  border-bottom: 1px solid #f3f4f6;
+  min-height: 60px;
+  align-items: center;
+}
+
+.gantt-row:hover {
+  background: #f9fafb;
+}
+
+.task-info {
+  width: 250px;
+  padding: 0.75rem 1rem;
+}
+
+.task-name {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.task-assignee {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.timeline-grid {
+  flex: 1;
+  display: flex;
+  position: relative;
+  min-height: 50px;
+}
+
+.timeline-cell {
+  flex: 1;
+  border-left: 1px solid #e5e7eb;
+}
+
+.task-bar {
+  position: absolute;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-bar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.task-bar-label {
+  position: relative;
+  z-index: 2;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.task-bar-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: width 0.3s ease;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #6b7280;
+}
+
+.empty-state p:first-child {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.legend {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.legend h4 {
+  margin: 0 0 1rem 0;
+  color: #1f2937;
+}
+
+.legend-items {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-color {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 1rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .toolbar-group {
+    flex-direction: column;
+  }
+
+  .toolbar-btn {
+    width: 100%;
+  }
+
+  .task-names-header,
+  .task-info {
+    width: 200px;
+  }
+}

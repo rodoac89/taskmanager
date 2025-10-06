@@ -1,0 +1,197 @@
+.timeline-container {
+  padding: 20px;
+  width: 100%;
+}
+
+/* Estilos para Timeline Vertical */
+.timeline-container.vertical .timeline {
+  position: relative;
+  padding-left: 40px;
+}
+
+.timeline-container.vertical .timeline::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #3b82f6 0%, #8b5cf6 100%);
+}
+
+.timeline-container.vertical .timeline-item {
+  position: relative;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.timeline-container.vertical .timeline-marker {
+  position: absolute;
+  left: -28px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 4px #fff, 0 0 0 6px currentColor;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.timeline-container.vertical .timeline-item:hover .timeline-marker {
+  transform: scale(1.2);
+}
+
+.timeline-container.vertical .timeline-content {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.timeline-container.vertical .timeline-item:hover .timeline-content {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateX(5px);
+}
+
+/* Estilos para Timeline Horizontal */
+.timeline-container.horizontal {
+  overflow-x: auto;
+  padding: 40px 20px;
+}
+
+.timeline-container.horizontal .timeline {
+  position: relative;
+  display: flex;
+  gap: 40px;
+  padding-top: 40px;
+  min-width: min-content;
+}
+
+.timeline-container.horizontal .timeline::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+}
+
+.timeline-container.horizontal .timeline-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 250px;
+}
+
+.timeline-container.horizontal .timeline-marker {
+  position: absolute;
+  top: -28px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 4px #fff, 0 0 0 6px currentColor;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.timeline-container.horizontal .timeline-item:hover .timeline-marker {
+  transform: scale(1.2);
+}
+
+.timeline-container.horizontal .timeline-content {
+  margin-top: 20px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.timeline-container.horizontal .timeline-item:hover .timeline-content {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+}
+
+/* Estilos comunes */
+.timeline-icon {
+  font-size: 16px;
+  color: white;
+}
+
+.timeline-date {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.timeline-title {
+  margin: 0 0 8px 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.timeline-description {
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.timeline-item.completed .timeline-marker {
+  box-shadow: 0 0 0 4px #fff, 0 0 0 6px #10b981;
+}
+
+.timeline-item.completed .timeline-content {
+  opacity: 0.8;
+  background: #f0fdf4;
+}
+
+/* Scrollbar personalizada para horizontal */
+.timeline-container.horizontal::-webkit-scrollbar {
+  height: 8px;
+}
+
+.timeline-container.horizontal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.timeline-container.horizontal::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 4px;
+}
+
+.timeline-container.horizontal::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .timeline-container.vertical {
+    padding-left: 10px;
+  }
+
+  .timeline-container.vertical .timeline {
+    padding-left: 30px;
+  }
+
+  .timeline-container.horizontal .timeline-item {
+    min-width: 200px;
+  }
+
+  .timeline-content {
+    padding: 15px !important;
+  }
+}

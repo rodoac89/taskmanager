@@ -1,0 +1,100 @@
+<div class="page-container">
+  <header class="page-header">
+    <button class="back-button" (click)="goHome()">
+      ← Volver
+    </button>
+    <h1>📊 Diagrama de Gantt</h1>
+    <div class="spacer"></div>
+  </header>
+
+  <div class="toolbar">
+    <div class="toolbar-group">
+      <button class="toolbar-btn" (click)="downloadExample()">
+        📥 Descargar Plantilla
+      </button>
+
+      <label class="toolbar-btn file-label">
+        📤 Cargar Excel/CSV
+        <input
+          type="file"
+          accept=".csv,.xlsx,.xls"
+          (change)="onFileSelected($event)"
+          hidden
+        />
+      </label>
+
+      <button class="toolbar-btn" (click)="exportData()">
+        💾 Exportar Datos
+      </button>
+    </div>
+  </div>
+
+  <div class="gantt-container">
+    <div class="gantt-chart">
+      <!-- Header de Timeline -->
+      <div class="gantt-header">
+        <div class="task-names-header">
+          <h3>Tareas</h3>
+        </div>
+        <div class="timeline-header">
+          @for (month of dateRange().months; track month) {
+            <div class="month-header">
+              {{ month | date:'MMM yyyy' }}
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Cuerpo del Gantt -->
+      <div class="gantt-body">
+        @for (task of tasks(); track task.id) {
+          <div class="gantt-row">
+            <div class="task-info">
+              <div class="task-name">{{ task.title }}</div>
+              <div class="task-assignee">👤 {{ task.assignee }}</div>
+            </div>
+            <div class="timeline-grid">
+              @for (month of dateRange().months; track month) {
+                <div class="timeline-cell"></div>
+              }
+              <div
+                class="task-bar"
+                [style.left.%]="getTaskPosition(task).left"
+                [style.width.%]="getTaskPosition(task).width"
+                [style.background-color]="getStatusColor(task.status)"
+                [title]="task.title + ' (' + (task.startDate | date:'shortDate') + ' - ' + (task.endDate | date:'shortDate') + ')'">
+                <span class="task-bar-label">{{ task.progress }}%</span>
+                <div class="task-bar-progress" [style.width.%]="task.progress"></div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (tasks().length === 0) {
+      <div class="empty-state">
+        <p>📊 No hay tareas para mostrar</p>
+        <p>Carga un archivo Excel o agrega tareas para ver el diagrama de Gantt</p>
+      </div>
+    }
+  </div>
+
+  <div class="legend">
+    <h4>Leyenda:</h4>
+    <div class="legend-items">
+      <div class="legend-item">
+        <span class="legend-color" style="background: #10b981;"></span>
+        <span>Completado</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #3b82f6;"></span>
+        <span>En Progreso</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #9ca3af;"></span>
+        <span>Pendiente</span>
+      </div>
+    </div>
+  </div>
+</div>

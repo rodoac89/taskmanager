@@ -1,0 +1,18 @@
+<div class="timeline-container" [class.horizontal]="orientation() === 'horizontal'" [class.vertical]="orientation() === 'vertical'">
+  <div class="timeline">
+    @for (event of events(); track event.id) {
+      <div class="timeline-item" [class.completed]="event.completed">
+        <div class="timeline-marker" [style.background-color]="event.color || '#3b82f6'">
+          @if (event.icon) {
+            <span class="timeline-icon">{{ event.icon }}</span>
+          }
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-date">{{ event.date | date:'short' }}</div>
+          <h3 class="timeline-title">{{ event.title }}</h3>
+          <p class="timeline-description">{{ event.description }}</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

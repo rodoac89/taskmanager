@@ -1,0 +1,43 @@
+<div class="home-container">
+  <header class="hero">
+    <h1 class="hero-title">📊 Task Manager</h1>
+    <p class="hero-subtitle">Gestiona tus proyectos con múltiples visualizaciones</p>
+  </header>
+
+  <section class="view-cards">
+    @for (view of viewOptions; track view.id) {
+      <div class="view-card" (click)="navigateTo(view.route)" [style.border-color]="view.color">
+        <div class="card-icon" [style.background-color]="view.color">
+          {{ view.icon }}
+        </div>
+        <h2 class="card-title">{{ view.title }}</h2>
+        <p class="card-description">{{ view.description }}</p>
+        <button class="card-button" [style.background-color]="view.color">
+          Abrir Vista
+        </button>
+      </div>
+    }
+  </section>
+
+  <section class="actions-section">
+    <div class="action-card">
+      <h3>📤 Cargar Datos</h3>
+      <p>Importa tus tareas desde un archivo Excel/CSV</p>
+      <button class="action-button primary" routerLink="/timeline">
+        Ir a Cualquier Vista para Cargar
+      </button>
+    </div>
+
+    <div class="action-card">
+      <h3>📥 Plantilla Excel</h3>
+      <p>Descarga un ejemplo de formato admitido</p>
+      <button class="action-button secondary" routerLink="/timeline">
+        Descargar desde Vista
+      </button>
+    </div>
+  </section>
+
+  <footer class="home-footer">
+    <p>Selecciona una vista para comenzar o carga tus datos desde Excel</p>
+  </footer>
+</div>
