@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ExcelService } from '../../services/excel.service';
 import { TaskService } from '../../services/task.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-home',
@@ -62,15 +63,26 @@ export class HomeComponent {
         this.taskService.updateTasks(tasks);
         this.loadedFileName.set(file.name);
         this.taskCount.set(tasks.length);
-
-        // Opcional: navegar automáticamente a una vista
         setTimeout(() => {
-          this.router.navigate(['/timeline']);
+          Swal.fire({
+            title: 'Cargado!',
+            text: 'Archivo cargado exitosamente',
+            icon: 'success',
+            confirmButtonText: 'Cool'
+          });
+          this.loadingFile.set(false);
         }, 1500);
+
       } catch (error: any) {
-        alert(`❌ Error al cargar el archivo: ${error.message}`);
-      } finally {
-        this.loadingFile.set(false);
+        setTimeout(() => {
+          Swal.fire({
+            title: 'Error',
+            text: `Error al cargar el archivo: ${error.message}`,
+            icon: 'error',
+            confirmButtonText: 'Too bad'
+          });
+          this.loadingFile.set(false);
+        }, 1500);
       }
     }
   }
