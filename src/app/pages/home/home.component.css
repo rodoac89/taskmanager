@@ -145,6 +145,29 @@
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
+.loading-text {
+  color: #f59e0b;
+  font-weight: 600;
+  margin-top: 1rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.success-text {
+  color: #10b981;
+  font-weight: 600;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 .home-footer {
   text-align: center;
   color: white;

@@ -23,16 +23,28 @@
     <div class="action-card">
       <h3>📤 Cargar Datos</h3>
       <p>Importa tus tareas desde un archivo Excel/CSV</p>
-      <button class="action-button primary" routerLink="/timeline">
-        Ir a Cualquier Vista para Cargar
-      </button>
+      <label class="action-button primary">
+        Seleccionar Archivo
+        <input
+          type="file"
+          accept=".csv,.xlsx,.xls"
+          (change)="onFileSelected($event)"
+          hidden
+        />
+      </label>
+      @if (loadingFile()) {
+        <p class="loading-text">Cargando archivo...</p>
+      }
+      @if (loadedFileName()) {
+        <p class="success-text">✅ {{ loadedFileName() }} - {{ taskCount() }} tareas cargadas</p>
+      }
     </div>
 
     <div class="action-card">
       <h3>📥 Plantilla Excel</h3>
       <p>Descarga un ejemplo de formato admitido</p>
-      <button class="action-button secondary" routerLink="/timeline">
-        Descargar desde Vista
+      <button class="action-button secondary" (click)="downloadExample()">
+        Descargar Plantilla
       </button>
     </div>
   </section>

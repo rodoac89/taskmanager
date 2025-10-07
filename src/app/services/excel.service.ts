@@ -129,6 +129,9 @@ export class ExcelService {
     const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
     const tasks: Task[] = [];
 
+    // Detectar si es el formato de Fraude o el formato simple
+    const isFraudeFormat = headers.includes('Frentes') || headers.includes('Simbología');
+
     for (let i = 1; i < lines.length; i++) {
       const values = this.parseCSVLine(lines[i]);
       if (values.length === 0) continue;
@@ -138,20 +141,54 @@ export class ExcelService {
         task[header] = values[index] || '';
       });
 
-      tasks.push({
-        id: task['ID'] || `task-${i}`,
-        title: task['Título'] || task['Titulo'] || 'Sin título',
-        description: task['Descripción'] || task['Descripcion'] || '',
-        startDate: this.parseDate(task['Fecha Inicio']),
-        endDate: this.parseDate(task['Fecha Fin']),
-        status: this.parseStatus(task['Estado']),
-        priority: this.parsePriority(task['Prioridad']),
-        assignee: task['Asignado'] || undefined,
-        progress: parseInt(task['Progreso (%)'] || '0')
-      });
+      if (isFraudeFormat) {
+        // Formato del CSV de Fraude
+        const title = task['Frentes'] || task['Entregable'] || 'Sin título';
+        if (!title || title.trim() === '') continue;
+
+        const progress = task['% Avance Real'] || '0%';
+        const progressNum = parseInt(progress.replace('%', '')) || 0;
+
+        tasks.push({
+          id: `task-${i}`,
+          title: title,
+          description: task['Entregable'] || task['Requerimiento'] || '',
+          startDate: this.parseDateFraude(task['Fecha Inicio'] || task['Baseline Start']),
+          endDate: this.parseDateFraude(task['Fecha Fin'] || task['Baseline Finish']),
+          status: this.parseStatusFraude(task['Estado']),
+          priority: this.parsePriorityFromSymbol(task['Simbología']),
+          assignee: task['Solution Architect'] || undefined,
+          progress: progressNum,
+          simbology: task['Simbología'] || undefined,
+          estado: task['Estado'] || undefined,
+          requerimiento: task['Requerimiento'] || undefined,
+          entregable: task['Entregable'] || undefined,
+          baselineStart: this.parseDateFraude(task['Baseline Start']),
+          baselineFinish: this.parseDateFraude(task['Baseline Finish']),
+          duracionPlaneada: task['Duracion Planeada'] || undefined,
+          avancePlanificado: task['% Avance Planificado'] || undefined,
+          variance: parseInt(task['Variance']) || 0,
+          duration: task['Duration'] || undefined,
+          predecessors: task['Predecessors'] || undefined,
+          solutionArchitect: task['Solution Architect'] || undefined
+        });
+      } else {
+        // Formato simple original
+        tasks.push({
+          id: task['ID'] || `task-${i}`,
+          title: task['Título'] || task['Titulo'] || 'Sin título',
+          description: task['Descripción'] || task['Descripcion'] || '',
+          startDate: this.parseDate(task['Fecha Inicio']),
+          endDate: this.parseDate(task['Fecha Fin']),
+          status: this.parseStatus(task['Estado']),
+          priority: this.parsePriority(task['Prioridad']),
+          assignee: task['Asignado'] || undefined,
+          progress: parseInt(task['Progreso (%)'] || '0')
+        });
+      }
     }
 
-    return tasks;
+    return tasks.filter(task => task.title && task.title.trim() !== '');
   }
 
   private parseCSVLine(line: string): string[] {
@@ -215,6 +252,28 @@ export class ExcelService {
     return isNaN(date.getTime()) ? new Date() : date;
   }
 
+  private parseDateFraude(dateStr: string): Date {
+    if (!dateStr) return new Date();
+
+    // Formato MM/DD/YY
+    const parts = dateStr.split('/');
+    if (parts.length === 3) {
+      const month = parseInt(parts[0]) - 1;
+      const day = parseInt(parts[1]);
+      let year = parseInt(parts[2]);
+
+      // Convertir año de 2 dígitos a 4 dígitos
+      if (year < 100) {
+        year += year < 50 ? 2000 : 1900;
+      }
+
+      const date = new Date(year, month, day);
+      return isNaN(date.getTime()) ? new Date() : date;
+    }
+
+    return this.parseDate(dateStr);
+  }
+
   private parseStatus(status: string): 'pending' | 'in-progress' | 'completed' {
     const normalized = status.toLowerCase().trim();
     if (normalized.includes('complet') || normalized.includes('finaliz')) return 'completed';
@@ -222,11 +281,27 @@ export class ExcelService {
     return 'pending';
   }
 
+  private parseStatusFraude(status: string): 'pending' | 'in-progress' | 'completed' {
+    const normalized = status.toLowerCase().trim();
+    if (normalized.includes('completado')) return 'completed';
+    if (normalized.includes('progreso')) return 'in-progress';
+    if (normalized.includes('no iniciada')) return 'pending';
+    return this.parseStatus(status);
+  }
+
   private parsePriority(priority: string): 'low' | 'medium' | 'high' {
     const normalized = priority.toLowerCase().trim();
     if (normalized.includes('alt') || normalized.includes('high')) return 'high';
     if (normalized.includes('medi') || normalized.includes('medium')) return 'medium';
     return 'low';
+  }
+
+  private parsePriorityFromSymbol(simbology: string): 'low' | 'medium' | 'high' {
+    const normalized = simbology.toLowerCase().trim();
+    if (normalized === 'red') return 'high';
+    if (normalized === 'yellow') return 'medium';
+    if (normalized === 'green') return 'low';
+    return 'medium';
   }
 
   private translateStatus(status: string): string {
