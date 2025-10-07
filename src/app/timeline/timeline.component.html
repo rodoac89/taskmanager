@@ -1,18 +1,54 @@
 <div class="timeline-container" [class.horizontal]="orientation() === 'horizontal'" [class.vertical]="orientation() === 'vertical'">
-  <div class="timeline">
-    @for (event of events(); track event.id) {
-      <div class="timeline-item" [class.completed]="event.completed">
-        <div class="timeline-marker" [style.background-color]="event.color || '#3b82f6'">
-          @if (event.icon) {
-            <span class="timeline-icon">{{ event.icon }}</span>
+  @if (orientation() === 'vertical') {
+    <div class="timeline">
+      @for (event of events(); track event.id) {
+        <div class="timeline-item" [class.completed]="event.completed">
+          <div class="timeline-marker" [style.background-color]="event.color || '#3b82f6'">
+            @if (event.icon) {
+              <span class="timeline-icon">{{ event.icon }}</span>
+            }
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-date">{{ event.date | date:'short' }}</div>
+            <h3 class="timeline-title">{{ event.title }}</h3>
+            <p class="timeline-description">{{ event.description }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <section class="ps-timeline-sec">
+      <div class="ps-container">
+        <ol class="ps-timeline">
+          @for (event of events(); track event.id; let i = $index) {
+            <li>
+              @if (i % 2 === 0) {
+                <div class="img-handler-top">
+                  <div class="ps-top">
+                    <h3 class="timeline-title">{{ event.title }}</h3>
+                    <p class="timeline-description">{{ event.description }}</p>
+                    <span class="timeline-date">{{ event.date | date:'short' }}</span>
+                  </div>
+                </div>
+                <span class="ps-sp-top" [style.background-color]="event.color || '#3b82f6'">
+                  {{ (i + 1).toString().padStart(2, '0') }}
+                </span>
+              } @else {
+                <div class="img-handler-bot">
+                  <div class="ps-bot">
+                    <h3 class="timeline-title">{{ event.title }}</h3>
+                    <p class="timeline-description">{{ event.description }}</p>
+                    <span class="timeline-date">{{ event.date | date:'short' }}</span>
+                  </div>
+                </div>
+                <span class="ps-sp-bot" [style.background-color]="event.color || '#3b82f6'">
+                  {{ (i + 1).toString().padStart(2, '0') }}
+                </span>
+              }
+            </li>
           }
-        </div>
-        <div class="timeline-content">
-          <div class="timeline-date">{{ event.date | date:'short' }}</div>
-          <h3 class="timeline-title">{{ event.title }}</h3>
-          <p class="timeline-description">{{ event.description }}</p>
-        </div>
+        </ol>
       </div>
-    }
-  </div>
+    </section>
+  }
 </div>

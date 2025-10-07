@@ -1,6 +1,6 @@
 .timeline-container {
   padding: 20px;
-  width: 100%;
+  width: 96%;
 }
 
 /* Estilos para Timeline Vertical */
@@ -61,66 +61,144 @@
 /* Estilos para Timeline Horizontal */
 .timeline-container.horizontal {
   overflow-x: auto;
-  padding: 40px 20px;
-}
-
-.timeline-container.horizontal .timeline {
-  position: relative;
+  overflow-y: hidden;
+  padding: 20px;
+  background: #f8f9fa;
   display: flex;
-  gap: 40px;
-  padding-top: 40px;
-  min-width: min-content;
-}
-
-.timeline-container.horizontal .timeline::before {
-  content: '';
-  position: absolute;
-  top: 15px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
-}
-
-.timeline-container.horizontal .timeline-item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  min-width: 250px;
+  min-height: 500px;
 }
 
-.timeline-container.horizontal .timeline-marker {
-  position: absolute;
-  top: -28px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+.ps-timeline-sec {
+  position: relative;
+  background: #f8f9fa;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 4px #fff, 0 0 0 6px currentColor;
-  z-index: 1;
-  transition: all 0.3s ease;
+  padding: 200px 0;
 }
 
-.timeline-container.horizontal .timeline-item:hover .timeline-marker {
-  transform: scale(1.2);
-}
-
-.timeline-container.horizontal .timeline-content {
-  margin-top: 20px;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+.ps-container {
+  max-width: 100%;
+  margin: 0 auto;
   width: 100%;
 }
 
-.timeline-container.horizontal .timeline-item:hover .timeline-content {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  transform: translateY(-5px);
+.ps-timeline {
+  list-style: none;
+  padding: 0 20px;
+  margin: 0;
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.ps-timeline::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.ps-timeline li {
+  position: relative;
+  flex: 0 0 auto;
+  min-width: 250px;
+  text-align: center;
+  height: 0;
+}
+
+.ps-timeline li:not(:last-child) {
+  margin-right: 40px;
+}
+
+/* Contenedores superiores e inferiores */
+.img-handler-top,
+.img-handler-bot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+}
+
+.img-handler-top {
+  bottom: 70px;
+}
+
+.img-handler-bot {
+  top: 70px;
+}
+
+.ps-top,
+.ps-bot {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.ps-top::after,
+.ps-bot::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+}
+
+.ps-top::after {
+  bottom: -10px;
+  border-top: 10px solid white;
+}
+
+.ps-bot::after {
+  top: -10px;
+  border-bottom: 10px solid white;
+}
+
+.ps-top:hover,
+.ps-bot:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Números/badges del timeline */
+.ps-sp-top,
+.ps-sp-bot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #3b82f6;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  box-shadow: 0 0 0 4px #f8f9fa, 0 0 0 8px currentColor;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.ps-sp-top:hover,
+.ps-sp-bot:hover {
+  transform: translate(-50%, -50%) scale(1.15);
+  box-shadow: 0 0 0 4px #f8f9fa, 0 0 0 10px currentColor;
 }
 
 /* Estilos comunes */
@@ -130,23 +208,25 @@
 }
 
 .timeline-date {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: #6b7280;
-  margin-bottom: 8px;
+  margin-top: 8px;
   font-weight: 500;
+  display: block;
 }
 
 .timeline-title {
   margin: 0 0 8px 0;
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #1f2937;
 }
 
 .timeline-description {
-  margin: 0;
+  margin: 0 0 8px 0;
   color: #4b5563;
-  line-height: 1.5;
+  line-height: 1.4;
+  font-size: 0.875rem;
 }
 
 .timeline-item.completed .timeline-marker {
@@ -160,24 +240,76 @@
 
 /* Scrollbar personalizada para horizontal */
 .timeline-container.horizontal::-webkit-scrollbar {
-  height: 8px;
+  height: 10px;
 }
 
 .timeline-container.horizontal::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
+  background: #f1f5f9;
+  border-radius: 5px;
+  margin: 0 20px;
 }
 
 .timeline-container.horizontal::-webkit-scrollbar-thumb {
-  background: #3b82f6;
-  border-radius: 4px;
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  border-radius: 5px;
+  transition: background 0.3s ease;
 }
 
 .timeline-container.horizontal::-webkit-scrollbar-thumb:hover {
-  background: #2563eb;
+  background: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%);
 }
 
 /* Responsive */
+@media (max-width: 992px) {
+  .ps-timeline {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ps-timeline::before {
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    height: auto;
+    transform: translateX(-50%);
+  }
+
+  .ps-timeline li {
+    margin-right: 0 !important;
+    margin-bottom: 80px;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .ps-timeline li:last-child {
+    margin-bottom: 0;
+  }
+
+  .img-handler-top {
+    position: static;
+    transform: none;
+    width: 100%;
+    margin-bottom: 50px;
+  }
+
+  .img-handler-bot {
+    position: static;
+    transform: none;
+    width: 100%;
+    margin-top: 50px;
+  }
+
+  .ps-sp-top,
+  .ps-sp-bot {
+    top: auto;
+    bottom: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 20px 0;
+  }
+}
+
 @media (max-width: 768px) {
   .timeline-container.vertical {
     padding-left: 10px;
@@ -187,11 +319,37 @@
     padding-left: 30px;
   }
 
-  .timeline-container.horizontal .timeline-item {
-    min-width: 200px;
+  .ps-timeline li {
+    min-width: auto;
+    max-width: 100%;
+  }
+
+  .img-handler-top,
+  .img-handler-bot {
+    width: 100%;
+  }
+
+  .ps-top,
+  .ps-bot {
+    padding: 15px;
+  }
+
+  .ps-sp-top,
+  .ps-sp-bot {
+    width: 50px;
+    height: 50px;
+    font-size: 1rem;
   }
 
   .timeline-content {
     padding: 15px !important;
+  }
+
+  .timeline-title {
+    font-size: 0.95rem;
+  }
+
+  .timeline-description {
+    font-size: 0.8rem;
   }
 }
