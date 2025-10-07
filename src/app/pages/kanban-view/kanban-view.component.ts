@@ -28,6 +28,19 @@ export class KanbanViewComponent {
     this.taskService.tasks().filter(t => t.status === 'completed')
   );
 
+  totalTasks = computed(() => this.taskService.tasks().length);
+
+  highPriorityTasks = computed(() =>
+    this.taskService.tasks().filter(t => t.priority === 'high').length
+  );
+
+  overallProgress = computed(() => {
+    const tasks = this.taskService.tasks();
+    if (tasks.length === 0) return 0;
+    const totalProgress = tasks.reduce((sum, task) => sum + (task.progress || 0), 0);
+    return Math.round(totalProgress / tasks.length);
+  });
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -69,5 +82,30 @@ export class KanbanViewComponent {
       'low': 'Baja'
     };
     return labels[priority] || priority;
+  }
+
+  formatDateRange(task: Task): string {
+    const start = task.startDate;
+    const end = task.endDate;
+    const startDay = start.getDate();
+    const endDay = end.getDate();
+    const month = start.toLocaleDateString('es-ES', { month: 'short' });
+    return `${startDay}-${endDay} ${month}`;
+  }
+
+  getWeekLabel(task: Task): string {
+    const weekNum = this.getWeekNumber(task.startDate);
+    return `Semana ${weekNum}`;
+  }
+
+  private getWeekNumber(date: Date): number {
+    const onejan = new Date(date.getFullYear(), 0, 1);
+    const millisecsInDay = 86400000;
+    return Math.ceil((((date.getTime() - onejan.getTime()) / millisecsInDay) + onejan.getDay() + 1) / 7);
+  }
+
+  getSubtaskCount(task: Task): number {
+    // Simulamos subtareas basadas en el progreso
+    return Math.ceil((task.progress || 0) / 20);
   }
 }

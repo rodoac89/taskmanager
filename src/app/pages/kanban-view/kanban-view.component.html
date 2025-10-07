@@ -1,20 +1,61 @@
 <div class="page-container">
   <header class="page-header">
-    <button class="back-button" (click)="goHome()">
-      ← Volver
-    </button>
-    <h1>📋 Kanban Board</h1>
-    <div class="spacer"></div>
+    <div class="header-content">
+      <button class="back-button" (click)="goHome()">
+        ← Volver
+      </button>
+      <div class="header-title">
+        <h1>Timeline Kanban</h1>
+        <p class="subtitle">Plan de Despliegue — Tablero de estado por columnas</p>
+      </div>
+    </div>
   </header>
 
+  <!-- Dashboard de Métricas -->
+  <div class="metrics-dashboard">
+    <div class="metric-card total">
+      <div class="metric-number">{{ totalTasks() }}</div>
+      <div class="metric-label">TOTAL TAREAS</div>
+    </div>
+    <div class="metric-card completed">
+      <div class="metric-number">{{ completedTasks().length }}</div>
+      <div class="metric-label">COMPLETADAS</div>
+    </div>
+    <div class="metric-card in-progress">
+      <div class="metric-number">{{ inProgressTasks().length }}</div>
+      <div class="metric-label">EN PROGRESO</div>
+    </div>
+    <div class="metric-card pending">
+      <div class="metric-number">{{ pendingTasks().length }}</div>
+      <div class="metric-label">PENDIENTES</div>
+    </div>
+    <div class="metric-card priority">
+      <div class="metric-number">{{ highPriorityTasks() }}</div>
+      <div class="metric-label">ALTA PRIORIDAD</div>
+    </div>
+  </div>
+
+  <!-- Barra de Progreso General -->
+  <div class="overall-progress">
+    <div class="progress-info">
+      <span>Progreso general: {{ overallProgress() }}% completado</span>
+    </div>
+    <div class="progress-bar-main">
+      <div class="progress-bar-fill" [style.width.%]="overallProgress()"></div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
   <div class="toolbar">
     <div class="toolbar-group">
-      <button class="toolbar-btn" (click)="downloadExample()">
-        📥 Descargar Plantilla
+      <button class="toolbar-btn secondary" (click)="exportData()">
+        Exportar imagen
       </button>
-
+      <button class="toolbar-btn" (click)="downloadExample()">
+        📥 Plantilla
+      </button>
       <label class="toolbar-btn file-label">
-        📤 Cargar Excel/CSV
+        📤 Cargar CSV
         <input
           type="file"
           accept=".csv,.xlsx,.xls"
@@ -22,62 +63,74 @@
           hidden
         />
       </label>
-
-      <button class="toolbar-btn" (click)="exportData()">
-        💾 Exportar Datos
-      </button>
     </div>
   </div>
 
+  <!-- Kanban Board -->
   <div class="kanban-board">
-    <div class="kanban-column pending">
+    <!-- Columna Completadas -->
+    <div class="kanban-column completed-column">
       <div class="column-header">
-        <h2>⏳ Pendiente</h2>
-        <span class="task-count">{{ pendingTasks().length }}</span>
+        <div class="column-title">
+          <span class="check-icon">✓</span>
+          <h2>Completadas</h2>
+        </div>
+        <span class="task-count">{{ completedTasks().length }}</span>
       </div>
       <div class="tasks-container">
-        @for (task of pendingTasks(); track task.id) {
-          <div class="task-card">
-            <div class="task-header">
+        @for (task of completedTasks(); track task.id) {
+          <div class="task-card completed">
+            <div class="task-title-row">
               <h3>{{ task.title }}</h3>
-              <span class="priority-badge" [style.background-color]="getPriorityColor(task.priority)">
-                {{ getPriorityLabel(task.priority) }}
-              </span>
             </div>
-            <p class="task-description">{{ task.description }}</p>
-            <div class="task-footer">
-              <span class="assignee">👤 {{ task.assignee }}</span>
-              <span class="dates">📅 {{ task.endDate | date:'shortDate' }}</span>
+            <div class="task-meta">
+              <span class="task-week">{{ getWeekLabel(task) }}: {{ formatDateRange(task) }}</span>
+              <span class="task-subtasks">{{ getSubtaskCount(task) }} elementos</span>
+            </div>
+            <div class="task-status-message">
+              <span class="status-icon">✓</span>
+              <span>Finalizada con éxito. Objetivos cumplidos satisfactoriamente.</span>
+            </div>
+            <div class="task-priority-tag" [class]="'priority-' + task.priority">
+              PRIORIDAD {{ getPriorityLabel(task.priority).toUpperCase() }}
             </div>
           </div>
         }
-        @if (pendingTasks().length === 0) {
-          <p class="empty-message">No hay tareas pendientes</p>
+        @if (completedTasks().length === 0) {
+          <p class="empty-message">No hay tareas completadas</p>
         }
       </div>
     </div>
 
-    <div class="kanban-column in-progress">
+    <!-- Columna En Progreso -->
+    <div class="kanban-column progress-column">
       <div class="column-header">
-        <h2>🔄 En Progreso</h2>
+        <div class="column-title">
+          <span class="progress-icon">◐</span>
+          <h2>En progreso</h2>
+        </div>
         <span class="task-count">{{ inProgressTasks().length }}</span>
       </div>
       <div class="tasks-container">
         @for (task of inProgressTasks(); track task.id) {
-          <div class="task-card">
-            <div class="task-header">
+          <div class="task-card in-progress">
+            <div class="task-title-row">
               <h3>{{ task.title }}</h3>
-              <span class="priority-badge" [style.background-color]="getPriorityColor(task.priority)">
-                {{ getPriorityLabel(task.priority) }}
-              </span>
             </div>
-            <p class="task-description">{{ task.description }}</p>
-            <div class="progress-bar">
-              <div class="progress-fill" [style.width.%]="task.progress"></div>
+            <div class="task-meta">
+              <span class="task-week">{{ getWeekLabel(task) }}: {{ formatDateRange(task) }}</span>
+              <span class="task-subtasks">{{ getSubtaskCount(task) }} elementos</span>
             </div>
-            <div class="task-footer">
-              <span class="assignee">👤 {{ task.assignee }}</span>
-              <span class="progress-text">{{ task.progress }}%</span>
+            <div class="task-progress-bar">
+              <div class="task-progress-fill" [style.width.%]="task.progress"></div>
+              <span class="progress-percentage">{{ task.progress }}%</span>
+            </div>
+            <div class="task-status-message">
+              <span class="status-icon">◐</span>
+              <span>En desarrollo. {{ task.assignee }} trabajando activamente.</span>
+            </div>
+            <div class="task-priority-tag" [class]="'priority-' + task.priority">
+              PRIORIDAD {{ getPriorityLabel(task.priority).toUpperCase() }}
             </div>
           </div>
         }
@@ -87,29 +140,36 @@
       </div>
     </div>
 
-    <div class="kanban-column completed">
+    <!-- Columna Pendientes -->
+    <div class="kanban-column pending-column">
       <div class="column-header">
-        <h2>✅ Completado</h2>
-        <span class="task-count">{{ completedTasks().length }}</span>
+        <div class="column-title">
+          <span class="pending-icon">○</span>
+          <h2>Pendientes</h2>
+        </div>
+        <span class="task-count">{{ pendingTasks().length }}</span>
       </div>
       <div class="tasks-container">
-        @for (task of completedTasks(); track task.id) {
-          <div class="task-card">
-            <div class="task-header">
+        @for (task of pendingTasks(); track task.id) {
+          <div class="task-card pending">
+            <div class="task-title-row">
               <h3>{{ task.title }}</h3>
-              <span class="priority-badge" [style.background-color]="getPriorityColor(task.priority)">
-                {{ getPriorityLabel(task.priority) }}
-              </span>
             </div>
-            <p class="task-description">{{ task.description }}</p>
-            <div class="task-footer">
-              <span class="assignee">👤 {{ task.assignee }}</span>
-              <span class="completed-badge">✓ Completado</span>
+            <div class="task-meta">
+              <span class="task-week">{{ getWeekLabel(task) }}: {{ formatDateRange(task) }}</span>
+              <span class="task-subtasks">{{ getSubtaskCount(task) }} elementos</span>
+            </div>
+            <div class="task-status-message">
+              <span class="status-icon">○</span>
+              <span>Programada. Asignado a {{ task.assignee }}.</span>
+            </div>
+            <div class="task-priority-tag" [class]="'priority-' + task.priority">
+              PRIORIDAD {{ getPriorityLabel(task.priority).toUpperCase() }}
             </div>
           </div>
         }
-        @if (completedTasks().length === 0) {
-          <p class="empty-message">No hay tareas completadas</p>
+        @if (pendingTasks().length === 0) {
+          <p class="empty-message">No hay tareas pendientes</p>
         }
       </div>
     </div>
