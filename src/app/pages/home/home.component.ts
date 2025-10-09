@@ -44,6 +44,14 @@ export class HomeComponent {
       icon: '📊',
       color: '#10b981',
       route: '/gantt'
+    },
+    {
+      id: 'burndown',
+      title: 'Burndown Chart',
+      description: 'Gráfico de progreso y velocidad del equipo',
+      icon: '📉',
+      color: '#ef4444',
+      route: '/burndown'
     }
   ];
 

@@ -1,0 +1,217 @@
+<div class="page-container">
+  <header class="page-header">
+    <button class="back-button" (click)="goHome()">
+      ← Volver
+    </button>
+    <h1>📉 Burndown Chart</h1>
+  </header>
+
+  <div class="toolbar">
+    <div class="toolbar-group">
+      <button class="toolbar-btn" (click)="downloadExample()">
+        📥 Descargar Plantilla
+      </button>
+
+      <label class="toolbar-btn file-label">
+        📤 Cargar Excel/CSV
+        <input
+          type="file"
+          accept=".csv,.xlsx,.xls"
+          (change)="onFileSelected($event)"
+          hidden
+        />
+      </label>
+
+      <button class="toolbar-btn" (click)="exportData()">
+        💾 Exportar Datos
+      </button>
+    </div>
+
+    <div class="toolbar-group">
+      <button
+        class="toolbar-btn toggle-btn"
+        [class.active]="showIdealLine()"
+        (click)="toggleIdealLine()">
+        📊 Línea Ideal
+      </button>
+      <button
+        class="toolbar-btn toggle-btn"
+        [class.active]="showActualLine()"
+        (click)="toggleActualLine()">
+        📈 Línea Real
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Stats Cards -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-value">{{ stats().total }}</div>
+        <div class="stat-label">Total Tareas</div>
+      </div>
+
+      <div class="stat-card completed">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value">{{ stats().completed }}</div>
+        <div class="stat-label">Completadas</div>
+      </div>
+
+      <div class="stat-card in-progress">
+        <div class="stat-icon">🔄</div>
+        <div class="stat-value">{{ stats().inProgress }}</div>
+        <div class="stat-label">En Progreso</div>
+      </div>
+
+      <div class="stat-card pending">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-value">{{ stats().pending }}</div>
+        <div class="stat-label">Pendientes</div>
+      </div>
+
+      <div class="stat-card completion">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-value">{{ stats().completionRate }}%</div>
+        <div class="stat-label">Completado</div>
+      </div>
+    </div>
+
+    <!-- Burndown Chart -->
+    @if (burndownData().length > 0 && chartPoints()) {
+      <div class="chart-container">
+        <h2 class="chart-title">Burndown Chart - Progreso del Proyecto</h2>
+
+        <svg [attr.viewBox]="'0 0 ' + chartPoints()!.chartWidth + ' ' + chartPoints()!.chartHeight" class="burndown-chart">
+          <!-- Grid lines -->
+          @for (i of [0, 1, 2, 3, 4]; track i) {
+            <line
+              [attr.x1]="chartPoints()!.padding"
+              [attr.y1]="chartPoints()!.padding + (chartPoints()!.chartHeight - chartPoints()!.padding * 2) * i / 4"
+              [attr.x2]="chartPoints()!.chartWidth - chartPoints()!.padding"
+              [attr.y2]="chartPoints()!.padding + (chartPoints()!.chartHeight - chartPoints()!.padding * 2) * i / 4"
+              class="grid-line"
+            />
+          }
+
+          <!-- Y-axis labels -->
+          @for (i of [0, 1, 2, 3, 4]; track i) {
+            <text
+              [attr.x]="chartPoints()!.padding - 10"
+              [attr.y]="chartPoints()!.padding + (chartPoints()!.chartHeight - chartPoints()!.padding * 2) * i / 4 + 5"
+              class="axis-label"
+              text-anchor="end">
+              {{ (chartPoints()!.maxTasks * (4 - i) / 4).toFixed(0) }}
+            </text>
+          }
+
+          <!-- Ideal line -->
+          @if (showIdealLine()) {
+            <polyline
+              [attr.points]="chartPoints()!.ideal"
+              class="ideal-line"
+            />
+          }
+
+          <!-- Actual line -->
+          @if (showActualLine()) {
+            <polyline
+              [attr.points]="chartPoints()!.actual"
+              class="actual-line"
+            />
+          }
+
+          <!-- Data points -->
+          @for (point of burndownData(); track point.dateStr; let i = $index) {
+            @if (showActualLine()) {
+              <circle
+                [attr.cx]="chartPoints()!.padding + i * chartPoints()!.xScale"
+                [attr.cy]="chartPoints()!.chartHeight - chartPoints()!.padding - point.actual * chartPoints()!.yScale"
+                r="4"
+                class="data-point actual-point"
+              >
+                <title>{{ point.dateStr }}: {{ point.actual }} tareas restantes ({{ point.completed }} completadas)</title>
+              </circle>
+            }
+          }
+
+          <!-- X-axis -->
+          <line
+            [attr.x1]="chartPoints()!.padding"
+            [attr.y1]="chartPoints()!.chartHeight - chartPoints()!.padding"
+            [attr.x2]="chartPoints()!.chartWidth - chartPoints()!.padding"
+            [attr.y2]="chartPoints()!.chartHeight - chartPoints()!.padding"
+            class="axis-line"
+          />
+
+          <!-- Y-axis -->
+          <line
+            [attr.x1]="chartPoints()!.padding"
+            [attr.y1]="chartPoints()!.padding"
+            [attr.x2]="chartPoints()!.padding"
+            [attr.y2]="chartPoints()!.chartHeight - chartPoints()!.padding"
+            class="axis-line"
+          />
+
+          <!-- Axis labels -->
+          <text
+            [attr.x]="chartPoints()!.chartWidth / 2"
+            [attr.y]="chartPoints()!.chartHeight - 5"
+            class="axis-title"
+            text-anchor="middle">
+            Días del Proyecto
+          </text>
+
+          <text
+            [attr.x]="15"
+            [attr.y]="chartPoints()!.chartHeight / 2"
+            class="axis-title"
+            text-anchor="middle"
+            [attr.transform]="'rotate(-90, 15, ' + chartPoints()!.chartHeight / 2 + ')'">
+            Tareas Restantes
+          </text>
+        </svg>
+
+        <!-- Legend -->
+        <div class="chart-legend">
+          @if (showIdealLine()) {
+            <div class="legend-item">
+              <div class="legend-color ideal"></div>
+              <span>Línea Ideal (Progreso Esperado)</span>
+            </div>
+          }
+          @if (showActualLine()) {
+            <div class="legend-item">
+              <div class="legend-color actual"></div>
+              <span>Línea Real (Progreso Actual)</span>
+            </div>
+          }
+        </div>
+
+        <!-- Date labels -->
+        <div class="date-labels">
+          @for (point of burndownData(); track point.dateStr; let i = $index) {
+            @if (i === 0 || i === burndownData().length - 1 || i % Math.ceil(burndownData().length / 8) === 0) {
+              <span class="date-label">{{ point.dateStr }}</span>
+            }
+          }
+        </div>
+      </div>
+    } @else {
+      <div class="empty-state">
+        <div class="empty-icon">📊</div>
+        <h3>No hay datos para mostrar</h3>
+        <p>Carga un archivo Excel/CSV para ver el Burndown Chart</p>
+        <label class="empty-button">
+          📤 Cargar Archivo
+          <input
+            type="file"
+            accept=".csv,.xlsx,.xls"
+            (change)="onFileSelected($event)"
+            hidden
+          />
+        </label>
+      </div>
+    }
+  </div>
+</div>
