@@ -275,6 +275,7 @@ export class ExcelService {
   }
 
   private parseStatus(status: string): 'pending' | 'in-progress' | 'completed' {
+    if (!status || typeof status !== 'string') return 'pending';
     const normalized = status.toLowerCase().trim();
     if (normalized.includes('complet') || normalized.includes('finaliz')) return 'completed';
     if (normalized.includes('progres') || normalized.includes('curso')) return 'in-progress';
@@ -282,6 +283,7 @@ export class ExcelService {
   }
 
   private parseStatusFraude(status: string): 'pending' | 'in-progress' | 'completed' {
+    if (!status || typeof status !== 'string') return 'pending';
     const normalized = status.toLowerCase().trim();
     if (normalized.includes('completado')) return 'completed';
     if (normalized.includes('progreso')) return 'in-progress';
@@ -290,6 +292,7 @@ export class ExcelService {
   }
 
   private parsePriority(priority: string): 'low' | 'medium' | 'high' {
+    if (!priority || typeof priority !== 'string') return 'medium';
     const normalized = priority.toLowerCase().trim();
     if (normalized.includes('alt') || normalized.includes('high')) return 'high';
     if (normalized.includes('medi') || normalized.includes('medium')) return 'medium';
@@ -297,6 +300,7 @@ export class ExcelService {
   }
 
   private parsePriorityFromSymbol(simbology: string): 'low' | 'medium' | 'high' {
+    if (!simbology || typeof simbology !== 'string') return 'medium';
     const normalized = simbology.toLowerCase().trim();
     if (normalized === 'red') return 'high';
     if (normalized === 'yellow') return 'medium';
